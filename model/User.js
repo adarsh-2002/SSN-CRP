@@ -10,7 +10,7 @@ const userSchema = new mongoose.Schema({
             type: Number,
             default: 1232
         },
-        Editor: Number,
+        Admin: Number,
     },
     password: {
         type: String,

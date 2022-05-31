@@ -11,14 +11,20 @@ export const getAllStudents = async (req, res) => {
 }
 
 export const createNewStudent = async (req, res) => {
-    if (!req?.body?.firstname || !req?.body?.lastname) {
-        return res.status(400).json({ 'message': 'First and last names are required' });
+    if (!req?.body?.firstname || !req?.body?.lastname || !req?.body?.rollNo) {
+        return res.status(400).json({ 'message': 'Firstname, lastname and roll number are required fields!' });
     }
-
     try {
+        console.log(req.body)
         const result = await Student.create({
             firstname: req.body.firstname,
-            lastname: req.body.lastname
+            lastname: req.body.lastname,
+            rollNo: req.body.rollNo,
+            class: req.body.class,
+            dept: req.body.dept,
+            graduationYear: req.body.graduationYear,
+            semester: req.body.semester,
+            records: req.body.records
         });
 
         res.status(201).json(result);
@@ -28,24 +34,30 @@ export const createNewStudent = async (req, res) => {
 }
 
 export const updateStudent = async (req, res) => {
-    if (!req?.body?.id) {
-        return res.status(400).json({ 'message': 'ID parameter is required.' });
+    if (!req?.body?.rollNo) {
+        return res.status(400).json({ 'message': 'Roll no is required.' });
     }
 
-    const student = await Student.findOne({ _id: req.body.id }).exec();
+    const student = await Student.findOne({ rollNo: req.body.rollNo }).exec();
     if (!student) {
         return res.status(204).json({ "message": `No employee matches ID ${req.body.id}.` });
     }
     if (req.body?.firstname) student.firstname = req.body.firstname;
     if (req.body?.lastname) student.lastname = req.body.lastname;
+    if (req.body?.rollNo) student.rollNo = req.body.rollNo;
+    if (req.body?.class) student.class = req.body.class;
+    if (req.body?.dept) student.dept = req.body.dept;
+    if (req.body?.graduationYear) student.graduationYear = req.body.graduationYear;
+    if (req.body?.semester) student.semester = req.body.semester;
+    if (req.body?.records) student.records = req.body.records;
     const result = await student.save();
     res.json(result);
 }
 
 export const deleteStudent = async (req, res) => {
-    if (!req?.body?.id) return res.status(400).json({ 'message': 'Employee ID required.' });
+    if (!req?.body?.rollNo) return res.status(400).json({ 'message': 'Roll No required.' });
 
-    const student = await Student.findOne({ _id: req.body.id }).exec();
+    const student = await Student.findOne({ rollNo: req.body.rollNo }).exec();
     if (!student) {
         return res.status(204).json({ "message": `No employee matches ID ${req.body.id}.` });
     }
@@ -54,9 +66,9 @@ export const deleteStudent = async (req, res) => {
 }
 
 export const getStudent = async (req, res) => {
-    if (!req?.params?.id) return res.status(400).json({ 'message': 'Employee ID required.' });
+    if (!req?.params?.rollNo) return res.status(400).json({ 'message': 'Student roll no. required.' });
 
-    const student = await Student.findOne({ _id: req.params.id }).exec();
+    const student = await Student.findOne({ rollNo: req.params.rollNo }).exec();
     if (!student) {
         return res.status(204).json({ "message": `No employee matches ID ${req.params.id}.` });
     }
