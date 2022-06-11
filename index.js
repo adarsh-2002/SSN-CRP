@@ -19,7 +19,7 @@ import refresh from './routes/refresh.js'
 import logout from './routes/logout.js'
 import students from './routes/api/students.js'
 import users from './routes/api/users.js'
-
+import bodyParser from 'body-parser';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 console.log('directory-name 👉️', __dirname);
@@ -33,7 +33,7 @@ app.use(credentials);
 
 // Cross Origin Resource Sharing
 app.use(cors(corsOptions));
-
+app.use(bodyParser.json());
 // built-in middleware to handle urlencoded form data
 app.use(urlencoded({ extended: false }));
 

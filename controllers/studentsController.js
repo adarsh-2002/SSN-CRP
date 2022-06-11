@@ -1,6 +1,6 @@
 // TODO: MODIFY FUNCTIONS FOR OUR LOGIC
 import Student from '../model/Student.js';
-import express from 'express';
+import express, { query } from 'express';
 import { Router } from 'express';
 const router = express.Router();
 
@@ -24,7 +24,8 @@ export const createNewStudent = async (req, res) => {
             dept: req.body.dept,
             graduationYear: req.body.graduationYear,
             semester: req.body.semester,
-            records: req.body.records
+            subject: req.body.subject,
+            marks: req.body.marks
         });
 
         res.status(201).json(result);
@@ -34,43 +35,49 @@ export const createNewStudent = async (req, res) => {
 }
 
 export const updateStudent = async (req, res) => {
-    if (!req?.body?.rollNo) {
-        return res.status(400).json({ 'message': 'Roll no is required.' });
-    }
-
-    const student = await Student.findOne({ rollNo: req.body.rollNo }).exec();
-    if (!student) {
-        return res.status(204).json({ "message": `No employee matches ID ${req.body.id}.` });
-    }
-    if (req.body?.firstname) student.firstname = req.body.firstname;
-    if (req.body?.lastname) student.lastname = req.body.lastname;
-    if (req.body?.rollNo) student.rollNo = req.body.rollNo;
-    if (req.body?.class) student.class = req.body.class;
-    if (req.body?.dept) student.dept = req.body.dept;
-    if (req.body?.graduationYear) student.graduationYear = req.body.graduationYear;
-    if (req.body?.semester) student.semester = req.body.semester;
-    if (req.body?.records) student.records = req.body.records;
-    const result = await student.save();
+    // if (!req?.body?.rollNo) {
+    //     return res.status(400).json({ 'message': 'Roll no is required.' });
+    // }
+    const query = {}
+    console.log(req.body)
+    if(req.body.rollNo != '' && req.body.rollNo != null) query["rollNo"] = req.body.rollNo;
+    if(req.body.firstname != '' && req.body.firstname != null) query["firstname"] = req.body.firstname;
+    if(req.body.lastname != '' && req.body.lastname != null) query["lastname"] = req.body.lastname;
+    if(req.body.dept != '' && req.body.dept != null) query["dept"] = req.body.dept;
+    if(req.body.semester != '' && req.body.semester != null) query["semester"] = req.body.semester;
+    if(req.body.subject != '' && req.body.subject != null) query["subject"] = req.body.subject;
+    console.log(query)
+    const result = await Student.updateMany(query, { $set: { marks: req.body.marks } }).exec();
     res.json(result);
 }
 
 export const deleteStudent = async (req, res) => {
-    if (!req?.body?.rollNo) return res.status(400).json({ 'message': 'Roll No required.' });
-
-    const student = await Student.findOne({ rollNo: req.body.rollNo }).exec();
-    if (!student) {
-        return res.status(204).json({ "message": `No employee matches ID ${req.body.id}.` });
-    }
-    const result = await student.deleteOne(); //{ _id: req.body.id }
+    const query = {}
+    console.log(req.query)
+    if(req.body.rollNo != '' && req.body.rollNo != null) query["rollNo"] = req.body.rollNo;
+    if(req.body.firstname != '' && req.body.firstname != null) query["firstname"] = req.body.firstname;
+    if(req.body.lastname != '' && req.body.lastname != null) query["lastname"] = req.body.lastname;
+    if(req.body.dept != '' && req.body.dept != null) query["dept"] = req.body.dept;
+    if(req.body.semester != '' && req.body.semester != null) query["semester"] = req.body.semester;
+    if(req.body.subject != '' && req.body.subject != null) query["subject"] = req.body.subject;
+    console.log(query)
+    const result = await Student.deleteMany(query).exec();
     res.json(result);
 }
 
 export const getStudent = async (req, res) => {
-    if (!req?.params?.rollNo) return res.status(400).json({ 'message': 'Student roll no. required.' });
-
-    const student = await Student.findOne({ rollNo: req.params.rollNo }).exec();
+    const query = {}
+    if(req.query.rollNo != '' && req.query.rollNo != null) query["rollNo"] = req.query.rollNo;
+    if(req.query.firstname != '' && req.query.firstname != null) query["firstname"] = req.query.firstname;
+    if(req.query.lastname != '' && req.query.lastname != null) query["lastname"] = req.query.lastname;
+    if(req.query.dept != '' && req.query.dept != null) query["dept"] = req.query.dept;
+    if(req.query.semester != '' && req.query.semester != null) query["semester"] = req.query.semester;
+    if(req.query.subject != '' && req.query.subject != null) query["subject"] = req.query.subject;
+    if(req.query.class != '' && req.query.class != null) query["class"] = req.query.class;
+    console.log(query)
+    const student = await Student.find(query).exec();
     if (!student) {
-        return res.status(204).json({ "message": `No employee matches ID ${req.params.id}.` });
+        return res.status(204).json({ "message": `No student matches ID ${req.params.rollNo}.` });
     }
     res.json(student);
 }

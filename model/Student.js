@@ -28,11 +28,14 @@ const studentSchema = new mongoose.Schema({
         type: Number,
         required: true
     },
-    records: [{
-            subject: String,
-            marks: Number
-    }
-        ]
+    subject: {
+        type: String,
+        required: true
+    },
+    marks: {
+        type: Number,
+        required: true
+    },
 });
 
 
